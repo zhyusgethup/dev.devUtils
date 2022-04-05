@@ -3,8 +3,9 @@
  * @returns {JSX.Element}
  * @constructor
  */
-import { Breadcrumb, Menu } from 'antd';
-import Layout, { Content, Footer, Header } from 'antd/lib/layout/layout';
+import { Menu } from 'antd';
+import Layout, { Content, Header } from 'antd/lib/layout/layout';
+import SubMenu from 'antd/lib/menu/SubMenu';
 import { Outlet, useNavigate } from 'react-router-dom';
 
 function App() {
@@ -27,25 +28,25 @@ function App() {
     );
   }
 
-  // function renderMenusInSubMenu(menusData: Array<any>) {
-  //   const menus = [];
-  //   // eslint-disable-next-line no-restricted-syntax
-  //   for (const e of menusData) {
-  //     menus.push(renderMenu(index, e.text, e.url));
-  //     index += 1;
-  //   }
-  //   return menus;
-  // }
+  function renderMenusInSubMenu(menusData: Array<any>) {
+    const menus = [];
+    // eslint-disable-next-line no-restricted-syntax
+    for (const e of menusData) {
+      menus.push(renderMenu(index, e.text, e.url));
+      index += 1;
+    }
+    return menus;
+  }
 
-  // function renderSubMenu(subMenusData: any) {
-  //   const key = index;
-  //   index += 1;
-  //   return (
-  //     <SubMenu title={subMenusData.title} key={key}>
-  //       {renderMenusInSubMenu(subMenusData.menusData)}
-  //     </SubMenu>
-  //   );
-  // }
+  function renderSubMenu(subMenusData: any) {
+    const key = index;
+    index += 1;
+    return (
+      <SubMenu title={subMenusData.title} key={key}>
+        {renderMenusInSubMenu(subMenusData.menusData)}
+      </SubMenu>
+    );
+  }
 
   function renderMenuWithoutKey(text: string, url: string) {
     const key = index;
@@ -56,26 +57,20 @@ function App() {
   function renderMenus() {
     const menus = [];
     menus.push(renderMenuWithoutKey('hello', '/hello'));
-    menus.push(renderMenuWithoutKey('java解析', '/javaParse'));
-    // menus.push(
-    //   renderSubMenu({
-    //     title: 'CRUD DEMO',
-    //     menusData: [
-    //       {
-    //         text: 'demo1',
-    //         url: '/crud1',
-    //       },
-    //       {
-    //         text: 'demo2',
-    //         url: '/crud2',
-    //       },
-    //       {
-    //         text: 'demo3',
-    //         url: '/crud3',
-    //       },
-    //     ],
-    //   })
-    // );
+    menus.push(
+      renderSubMenu({
+        title: '解析',
+        menusData: [
+          {
+            text: 'java实体解析为ddl解析',
+            url: '/javaParse',
+          }, {
+            text: 'JSON格式化',
+            url: '/jsonFormat',
+          },
+        ],
+      })
+    );
     return menus;
   }
 
@@ -88,18 +83,10 @@ function App() {
         </Menu>
       </Header>
       <Content style={{ padding: '0 50px' }}>
-        <Breadcrumb style={{ margin: '16px 0' }}>
-          <Breadcrumb.Item>Home</Breadcrumb.Item>
-          <Breadcrumb.Item>List</Breadcrumb.Item>
-          <Breadcrumb.Item>App</Breadcrumb.Item>
-        </Breadcrumb>
         <div className="site-layout-content" id="content">
           <Outlet />
         </div>
       </Content>
-      <Footer style={{ textAlign: 'center' }}>
-        Ant Design ©2021 Created by Ant UED
-      </Footer>
     </Layout>
   );
 }

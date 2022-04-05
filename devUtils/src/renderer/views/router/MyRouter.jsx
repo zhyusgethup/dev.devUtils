@@ -4,6 +4,7 @@ import { HashRouter, Route, Routes } from 'react-router-dom';
 import App from '../../App';
 import JavaParse from '../utils/JavaParse';
 import Hello from '../Hello';
+import JsonFormat from '../utils/JsonFormat';
 
 /**
  * 在这里注册路由
@@ -21,6 +22,7 @@ class MyRouter extends Component {
           <Route path="/" element={<App />}>
             <Route path="javaParse" element={<JavaParse />} />
             <Route path="hello" element={<Hello />} />
+            <Route path="jsonFormat" element={<JsonFormat />} />
           </Route>
         </Routes>
       </HashRouter>
