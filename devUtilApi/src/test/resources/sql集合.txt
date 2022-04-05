@@ -1,0 +1,7 @@
+insert into mdg_ff_materials(id, name) values(1, '激情燃烧的岁月');
+insert into mdg_ff_materials values(1, '激情燃烧的岁月');
+insert into mdg_ff_materials values(1, '激情燃烧的岁月'), (2, '奋斗为了一切');
+insert into mdg_ff_materials select * from copy where id = 1;
+insert into mdg_ff_materials (id, name) select * from copy where id = 1;
+
+insert into table[(f1 ...)] values();

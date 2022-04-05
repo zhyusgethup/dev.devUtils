@@ -1,0 +1,1 @@
+INSERT INTO mdg_ff_materials(id, tt,bb) VALUES (1,"123 456", #{name})

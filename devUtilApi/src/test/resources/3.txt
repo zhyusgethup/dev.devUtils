@@ -1,0 +1,5 @@
+ #{companyCode, jdbcType=VARCHAR },
+        #{materialNo ,  jdbcType =  VARCHAR},
+        #{materialnum , jdbcType = VARCHAR},
+        3,
+        '1232',
