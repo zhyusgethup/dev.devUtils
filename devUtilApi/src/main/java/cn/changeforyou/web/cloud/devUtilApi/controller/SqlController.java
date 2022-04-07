@@ -1,13 +1,14 @@
 package cn.changeforyou.web.cloud.devUtilApi.controller;
 
+import cn.changeforyou.web.cloud.devUtilApi.common.model.ResultWithEncoded;
+import cn.changeforyou.web.cloud.devUtilApi.common.model.StringReqModel;
+import cn.changeforyou.web.cloud.devUtilApi.common.model.StringRespModel;
 import cn.changeforyou.web.cloud.webBase.common.model.Result;
 import cn.changeforyou.web.cloud.webBase.platform.PlatformEnum;
 import cn.changeforyou.web.cloud.webBase.platform.PlatformStringUtils;
 import cn.changeforyou.web.cloud.webBase.platform.PlatformUtils;
 import cn.changeforyou.web.cloud.devUtilApi.Constant;
 import cn.changeforyou.web.cloud.devUtilApi.db.sql.SqlFormatUtil;
-import cn.changeforyou.web.cloud.devUtilApi.modules.json.StringReqModel;
-import cn.changeforyou.web.cloud.devUtilApi.modules.json.StringRespModel;
 import cn.hutool.core.codec.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,9 +36,9 @@ public class SqlController {
         HttpServletRequest request =((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         PlatformEnum platform = PlatformUtils.getPlatform(request);
         result = PlatformStringUtils.getStringAdaptPlatform(platform, result);
-        if(Constant.base64.equalsIgnoreCase(model.getEncode())){
+        if(ResultWithEncoded.DEFAULT_ENCODED.equalsIgnoreCase(model.getArithmetic())){
             result = Base64.encode(result);
-            respModel.setEncode(Constant.base64);
+            respModel.setEncode(ResultWithEncoded.DEFAULT_ENCODED);
         }
         respModel.setValue(result);
         return Result.success(respModel);

@@ -1,4 +1,4 @@
-package cn.changeforyou.web.cloud.devUtilApi.modules.json;
+package cn.changeforyou.web.cloud.devUtilApi.common.model;
 
 import lombok.Data;
 

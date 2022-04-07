@@ -1,9 +1,10 @@
 package cn.changeforyou.web.cloud.devUtilApi.controller;
 
+import cn.changeforyou.web.cloud.devUtilApi.common.model.ResultWithEncoded;
+import cn.changeforyou.web.cloud.devUtilApi.common.model.StringReqModel;
+import cn.changeforyou.web.cloud.devUtilApi.common.model.StringRespModel;
 import cn.changeforyou.web.cloud.webBase.common.model.Result;
 import cn.changeforyou.web.cloud.devUtilApi.Constant;
-import cn.changeforyou.web.cloud.devUtilApi.modules.json.StringReqModel;
-import cn.changeforyou.web.cloud.devUtilApi.modules.json.StringRespModel;
 import cn.hutool.core.codec.Base64;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,9 +28,9 @@ public class MybatisController {
 //        String result = mybatisService.insertContent2updateContent(src);
         String result = "";
         StringRespModel respModel = new StringRespModel();
-        if(Constant.base64.equalsIgnoreCase(model.getEncode())){
+        if(ResultWithEncoded.DEFAULT_ENCODED.equalsIgnoreCase(model.getArithmetic())){
             result = Base64.encode(result);
-            respModel.setEncode(Constant.base64);
+            respModel.setEncode(ResultWithEncoded.DEFAULT_ENCODED);
         }
         respModel.setValue(result);
         return Result.success(respModel);

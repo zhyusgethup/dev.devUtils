@@ -1,63 +1,103 @@
 package cn.changeforyou.web.cloud.devUtilApi.filters;
 
+import cn.changeforyou.utils.string.StringUtils;
+import cn.changeforyou.web.cloud.devUtilApi.common.model.ResultWithEncoded;
+import cn.changeforyou.web.cloud.devUtilApi.common.model.StringReqModel;
+import cn.changeforyou.web.cloud.devUtilApi.http.ParameterRequestWrapper;
 import cn.changeforyou.web.utils.http.ServletUtils;
 import cn.changeforyou.web.utils.http.warpper.BufferedHttpResponseWrapper;
+import cn.hutool.core.codec.Base64;
+import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static sun.plugin2.util.PojoUtil.toJson;
 
 @Slf4j
-@WebFilter(filterName = "stringReqRespFilter", urlPatterns = {"/string/*", "/json/*"})
 public class StringReqRespFilter implements Filter {
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        Filter.super.init(filterConfig);
-    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = ((HttpServletRequest) request);
-        String requestBody = "";
-        String requestContentType = req.getHeader(HttpHeaders.CONTENT_TYPE);
-        String url = req.getRequestURL().toString();
-        if (requestContentType != null) {
-//			xml json
-            if ((requestContentType.startsWith(MediaType.APPLICATION_JSON_VALUE) || requestContentType.startsWith(MediaType.APPLICATION_XML_VALUE)) && req.getMethod()
-                    .equalsIgnoreCase("POST")) {
-                StringBuilder sb = new StringBuilder();
-                req = ServletUtils.getRequestBody(req, sb);
-                requestBody = sb.toString();
-//		    普通表单提交
-            } else if (requestContentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED_VALUE)) {
-                requestBody = toJson(req.getParameterMap());
-//			文件表单提交
-            } else if (requestContentType.startsWith(MediaType.MULTIPART_FORM_DATA_VALUE)) {
-                requestBody = getFormParam(req);
+        String contentType = req.getHeader(HttpHeaders.CONTENT_TYPE);
+
+        boolean modify = false;
+        if (null == contentType) {
+        } else if (contentType.startsWith(APPLICATION_JSON_VALUE)) {
+            StringBuilder sb = new StringBuilder();
+            req = ServletUtils.getRequestBody(req, sb);
+            StringReqModel reqModel = JSONUtil.toBean(sb.toString(), StringReqModel.class);
+            if (ResultWithEncoded.DEFAULT_ENCODED.equals(reqModel.getArithmetic())) {
+                String value = reqModel.getValue();
+                byte[] decode = Base64.decode(value);
+                String newValue = new String(decode, StandardCharsets.UTF_8);
+                reqModel.setValue(newValue);
+                req = ServletUtils.wrapperHttpServletRequest(req, JSONUtil.toJsonStr(reqModel));
+                modify = true;
             } else {
-                requestBody = toJson(req.getParameterMap());
+                req = ServletUtils.wrapperHttpServletRequest(req, sb.toString());
             }
-        } else if (req.getMethod().equals(HttpMethod.GET.name())) {
-            requestBody = toJson(req.getParameterMap());
+
+        } else {
+            Map<String, String[]> parameterMap = req.getParameterMap();
+            String[] encodes = parameterMap.get("encode");
+            if (encodes != null && encodes[0].equals("base64")) {
+                ParameterRequestWrapper wrapper = new ParameterRequestWrapper(req);
+                modify = true;
+                String[] values = parameterMap.get("value");
+                if (null != values) {
+                    String value = values[0];
+                    if (StringUtils.isNotBlank(value)) {
+                        byte[] decode = Base64.decode(value);
+                        String newValue = new String(decode, StandardCharsets.UTF_8);
+
+                        wrapper.addParameter("value", newValue);
+                        wrapper.addParameter("encode", "base64");
+                    }
+                }
+                req = wrapper;
+            } else {
+            }
         }
 
         BufferedHttpResponseWrapper responseWrapper = new BufferedHttpResponseWrapper((HttpServletResponse) response);
-        log.debug("URL: {}, requestBody: {}", url, requestBody);
         chain.doFilter(req, responseWrapper);
+
+        byte[] buffer = responseWrapper.getBuffer();
+        if (modify) {
+            String res = new String(buffer);
+            ResultWithEncoded result = JSONUtil.toBean(res, ResultWithEncoded.class);
+            if (result.isEncode() || result.getCode() != 0) {
+                response.getOutputStream().write(buffer);
+                return;
+            }
+            String arithmetic = result.getArithmetic();
+            if (ResultWithEncoded.DEFAULT_ENCODED.equals(arithmetic)) {
+                String data = result.getData();
+                String encodedData = Base64.encode(data);
+                result.setData(encodedData);
+                result.setEncode(true);
+
+                String responseString = JSONUtil.toJsonStr(result);
+                response.getOutputStream().write(responseString.getBytes(StandardCharsets.UTF_8));
+            }
+        } else {
+            response.getOutputStream().write(buffer);
+        }
     }
 
     @Override
@@ -82,6 +122,14 @@ public class StringReqRespFilter implements Filter {
             }
         }
         return toJson(param);
+    }
+
+    private static class RequestWrapper extends HttpServletRequestWrapper {
+        public RequestWrapper(HttpServletRequest request) {
+            super(request);
+        }//这里用的是内部类，也可以不用
+
+
     }
 
 }

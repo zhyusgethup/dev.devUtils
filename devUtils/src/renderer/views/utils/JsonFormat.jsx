@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import TextArea from 'antd/es/input/TextArea';
-import { Button } from 'antd';
-import {Base64} from 'js-base64';
+import { Button, message} from 'antd';
+import { Base64 } from 'js-base64';
 import { request } from '../../commonApi/request';
+import ClipboardJS from 'clipboard';
 
 
 class JsonFormat extends Component {
@@ -10,12 +11,24 @@ class JsonFormat extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: '',
-      loadings: []
+      value: '{"data":1}',
+      loadings: [],
+      result: ''
     };
     this.onChange = this.onChange.bind(this);
     this.submit = this.submit.bind(this);
   }
+
+  componentDidMount() {
+    const copy = new ClipboardJS('.copy');
+    copy.on('success', e => {
+      message.success('复制成功');
+    });
+    copy.on('error', function(e) {
+      message.error("复制失败:" + e.message);
+    });
+  }
+
 
   onChange = ({ target: { value } }) => {
     this.setState({ value });
@@ -26,11 +39,14 @@ class JsonFormat extends Component {
       loadings: [true]
     });
     let value = Base64.encode(this.state.value);
-    request.post('/json/format', {
-      encode: 'base64',
+    let data = {
+      arithmetic: 'base64',
       value: value
-    }).then(res => {
-      console.log(res);
+    };
+    request.post('/json/format', data).then(res => {
+      let data = res.data;
+      let str = Base64.decode(data);
+      this.setState({ result: str });
     }).finally(() => this.setState({
       loadings: []
     }));
@@ -40,21 +56,26 @@ class JsonFormat extends Component {
   render() {
     return (
       <div>
-        <h1 style={{ 'text-align': 'center' }}>请输入json字符串</h1>
         <TextArea
-          value={this.value}
+          value={this.state.value}
           onChange={this.onChange}
-          placeholder='Controlled autosize'
-          autoSize={{ minRows: 15, maxRows: 15 }}
+          placeholder='请输入json字符串'
+          autoSize={{ minRows: 10, maxRows: 10 }}
         />
-        <div>
-          <br />
-          <Button type='primary' size='large' style={{ display: 'block', margin: '0 auto' }}
+        <div style={{ textAlign: 'center' }}>
+          <Button type='primary' style={{ margin: '2px' }}
                   loading={this.state.loadings[0]} onClick={this.submit}>
             提交
           </Button>
+          <Button type='primary' style={{ margin: '2px' }} data-clipboard-text={this.state.result} className={'copy'}>
+            复制
+          </Button>
         </div>
-
+        <TextArea
+          value={this.state.result}
+          placeholder='格式化后的字符串'
+          autoSize={{ minRows: 15, maxRows: 15 }}
+        />
       </div>
     );
   }
