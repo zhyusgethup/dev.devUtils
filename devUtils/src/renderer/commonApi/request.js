@@ -2,10 +2,11 @@ import axios from 'axios';
 
 import { message } from 'antd';
 import CrudMessageHandler from './CrudMessageHandler';
+import { BASE_URL, TIMEOUT } from '../config/RequestConstant';
 
 const instance = axios.create({
-  baseURL: 'http://localhost:7003/devUtilApi',
-  timeout: 3000
+  baseURL: BASE_URL,
+  timeout: TIMEOUT
 });
 
 //添加拦截

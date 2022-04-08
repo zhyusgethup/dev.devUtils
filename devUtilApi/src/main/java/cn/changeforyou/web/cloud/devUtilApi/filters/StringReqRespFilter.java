@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static sun.plugin2.util.PojoUtil.toJson;
 
 @Slf4j
 public class StringReqRespFilter implements Filter {
@@ -124,12 +123,8 @@ public class StringReqRespFilter implements Filter {
         return toJson(param);
     }
 
-    private static class RequestWrapper extends HttpServletRequestWrapper {
-        public RequestWrapper(HttpServletRequest request) {
-            super(request);
-        }//这里用的是内部类，也可以不用
-
-
+    private static String toJson(Object object) {
+        return JSONUtil.toJsonStr(object);
     }
 
 }

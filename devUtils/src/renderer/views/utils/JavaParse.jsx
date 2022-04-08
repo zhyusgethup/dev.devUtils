@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Upload, message, Button, Form, Progress, Input, Drawer } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import TextArea from 'antd/es/input/TextArea';
+import { BASE_URL } from '../../config/RequestConstant';
 
 const base64 = require('js-base64').Base64;
 
@@ -60,7 +61,7 @@ class JavaParse extends Component {
     const refThis = this;
     const props = {
       name: 'javaFile',
-      action: 'http://localhost:7003/devUtilApi/java/generateSqlByJavaFile',
+      action: BASE_URL + '/java/generateSqlByJavaFile',
       headers: {
         platform: 'Web',
       },
