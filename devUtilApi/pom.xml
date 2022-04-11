@@ -108,6 +108,20 @@
             <optional>true</optional>
             <scope>true</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.fangjinuo.sqlhelper</groupId>
+            <artifactId>sqlhelper-jsqlparser</artifactId>
+            <version>3.6.9</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.fangjinuo.sqlhelper</groupId>
+            <artifactId>sqlhelper</artifactId>
+            <version>3.6.9</version>
+            <type>pom</type>
+        </dependency>
+
+
+
     </dependencies>
     <dependencyManagement>
         <dependencies>

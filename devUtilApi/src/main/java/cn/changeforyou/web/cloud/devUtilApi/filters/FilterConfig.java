@@ -25,7 +25,7 @@ public class FilterConfig {
         filterRegistrationBean.setOrder(1);
         filterRegistrationBean.setFilter(new StringReqRespFilter());
         filterRegistrationBean.setName("stringReqRespFilter");
-        filterRegistrationBean.addUrlPatterns("/string/*", "/json/*");
+        filterRegistrationBean.addUrlPatterns("/string/*", "/json/*", "/sql/*");
         return filterRegistrationBean;
     }
 

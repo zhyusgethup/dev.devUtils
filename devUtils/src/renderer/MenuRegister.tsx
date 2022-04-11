@@ -8,7 +8,7 @@ import Layout, { Content, Header } from 'antd/lib/layout/layout';
 import SubMenu from 'antd/lib/menu/SubMenu';
 import { Outlet, useNavigate } from 'react-router-dom';
 
-function App() {
+function MenuRegister() {
   let index = 1;
   /**
    * 这里有个钩子用在函数组件的普通方法的示范
@@ -67,6 +67,9 @@ function App() {
           }, {
             text: 'JSON格式化',
             url: '/jsonFormat',
+          }, {
+            text: 'DDL转java实体',
+            url: '/ddl2Entity',
           },
         ],
       })
@@ -91,4 +94,4 @@ function App() {
   );
 }
 
-export default App;
+export default MenuRegister;

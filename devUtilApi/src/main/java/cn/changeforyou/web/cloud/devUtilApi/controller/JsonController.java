@@ -20,7 +20,7 @@ public class JsonController {
 
     @PostMapping("format")
     @ResponseBody
-    public Result jsonFormat(@Valid @RequestBody StringReqModel model) {
+    public ResultWithEncoded jsonFormat(@Valid @RequestBody StringReqModel model) {
         String src = model.getValue();
         src = src.trim();
         String result = null;

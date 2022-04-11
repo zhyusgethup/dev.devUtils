@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import './root.css';
 import { HashRouter, Route, Routes } from 'react-router-dom';
-import App from '../../App';
+import MenuRegister from '../../MenuRegister';
 import JavaParse from '../utils/JavaParse';
 import Hello from '../Hello';
 import JsonFormat from '../utils/JsonFormat';
+import Ddl2Entity from '../utils/Ddl2Entity';
 
 /**
  * 在这里注册路由
@@ -19,10 +20,11 @@ class MyRouter extends Component {
     return (
       <HashRouter>
         <Routes>
-          <Route path="/" element={<App />}>
+          <Route path="/" element={<MenuRegister />}>
             <Route path="javaParse" element={<JavaParse />} />
             <Route path="hello" element={<Hello />} />
-            <Route path="jsonFormat" element={<JsonFormat />} />
+            <Route path="jsonFormat" element={<JsonFormat/>} />
+            <Route path="ddl2Entity" element={<Ddl2Entity/>} />
           </Route>
         </Routes>
       </HashRouter>

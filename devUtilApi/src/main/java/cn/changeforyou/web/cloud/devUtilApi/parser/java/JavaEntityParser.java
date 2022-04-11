@@ -113,6 +113,7 @@ public class JavaEntityParser {
         for (FieldDeclaration field : classOrInterfaceDeclaration.getFields()) {
             dealOneField(javaEntity, pairsAnnotationVisitor, field);
         }
+
     }
 
     /**
