@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import TextArea from 'antd/es/input/TextArea';
-import { Button, message} from 'antd';
+import { Button, message, Tooltip } from 'antd';
 import { Base64 } from 'js-base64';
 import { request } from '../../commonApi/request';
 import ClipboardJS from 'clipboard';
@@ -17,6 +17,7 @@ class SimpleUtilPage extends Component {
     };
     this.onChange = this.onChange.bind(this);
     this.submit = this.submit.bind(this);
+    this.clearContext = this.clearContext.bind(this);
   }
 
   componentDidMount() {
@@ -25,7 +26,7 @@ class SimpleUtilPage extends Component {
       message.success('复制成功');
     });
     copy.on('error', function(e) {
-      message.error("复制失败:" + e.message);
+      message.error('复制失败:' + e.message);
     });
   }
 
@@ -52,16 +53,23 @@ class SimpleUtilPage extends Component {
     }));
   };
 
+  clearContext() {
+    this.setState({ value: '' });
+  }
+
 
   render() {
     return (
       <div>
-        <TextArea
-          value={this.state.value}
-          onChange={this.onChange}
-          placeholder='请输入json字符串'
-          autoSize={{ minRows: 10, maxRows: 10 }}
-        />
+        <Tooltip placement='top' title={'双击清除内容'}>
+          <TextArea
+            value={this.state.value}
+            onChange={this.onChange}
+            onDoubleClick={this.clearContext}
+            placeholder='请输入json字符串'
+            autoSize={{ minRows: 10, maxRows: 10 }}
+          />
+        </Tooltip>
         <div style={{ textAlign: 'center' }}>
           <Button type='primary' style={{ margin: '2px' }}
                   loading={this.state.loadings[0]} onClick={this.submit}>

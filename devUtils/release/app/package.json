@@ -1,12 +1,12 @@
 {
-  "name": "electron-react-boilerplate",
-  "version": "1.0.0",
-  "description": "A foundation for scalable desktop apps",
+  "name": "devUtils",
+  "version": "1.0.1",
+  "description": "开发小工具",
   "main": "./dist/main/main.js",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronReactboilerplate@gmail.com",
-    "url": "https://github.com/electron-react-boilerplate"
+    "name": "zhyu",
+    "email": "2649160284@qq.com",
+    "url": "www.changeforyou.cn"
   },
   "scripts": {
     "electron-rebuild": "node -r ts-node/register ../../.erb/scripts/electron-rebuild.js",

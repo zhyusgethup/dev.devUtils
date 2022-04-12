@@ -11,7 +11,12 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.ReceiverParameter;
 import com.github.javaparser.ast.comments.JavadocComment;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +47,15 @@ public class SqlServiceImpl implements SqlService {
         compilationUnit.setPackageDeclaration("xx.xxx");
         ClassOrInterfaceDeclaration classDeclaration = compilationUnit.addClass(NameUtils.getFirstUpperName(javaEntity.getName()));
         String entityComment = javaEntity.getComment();
+
+        boolean writeGetterSetter = false;
+        try {
+            Class.forName("alombok.Data");
+            classDeclaration.addAnnotation(lombok.Data.class);
+        } catch (ClassNotFoundException e) {
+            writeGetterSetter = true;
+        }
+
         if (StringUtils.isNotBlank(entityComment)) {
             JavadocComment javadocComment = new JavadocComment();
             javadocComment.setContent(entityComment);
@@ -59,13 +73,25 @@ public class SqlServiceImpl implements SqlService {
                 javadocComment.setContent(entityComment);
                 fieldDeclaration.setJavadocComment(comment);
             }
+
         }
 
-        try {
-            Class.forName("lombok.Data");
-            classDeclaration.addAnnotation(lombok.Data.class);
-        } catch (ClassNotFoundException e) {
+        if(writeGetterSetter) {
+            for (JavaEntityField entityField : javaEntity.getJavaEntityFields()) {
+                String name = entityField.getName();
+                Class javaClass = entityField.getJavaClass();
+                MethodDeclaration getMethod = classDeclaration.addMethod("get" + NameUtils.getFirstUpperName(name), Modifier.Keyword.PUBLIC);
+                ReturnStmt returnStmt = new ReturnStmt(new NameExpr("this." + name));
+                getMethod.setBody(new BlockStmt().addStatement(returnStmt));
+                getMethod.setType(javaClass);
 
+                MethodDeclaration setMethod = classDeclaration.addMethod("set" + NameUtils.getFirstUpperName(name), Modifier.Keyword.PUBLIC);
+                ReceiverParameter receiverParameter = new ReceiverParameter();
+                receiverParameter.setType(javaClass);
+                setMethod.setReceiverParameter(receiverParameter);
+
+                setMethod.setBody(new BlockStmt().addStatement("this." + name  + " = " + name + ";"));
+            }
         }
 
 
