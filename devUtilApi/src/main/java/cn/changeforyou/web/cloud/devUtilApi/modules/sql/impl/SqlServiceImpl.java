@@ -50,7 +50,7 @@ public class SqlServiceImpl implements SqlService {
 
         boolean writeGetterSetter = false;
         try {
-            Class.forName("alombok.Data");
+            Class.forName("lombok.Data");
             classDeclaration.addAnnotation(lombok.Data.class);
         } catch (ClassNotFoundException e) {
             writeGetterSetter = true;

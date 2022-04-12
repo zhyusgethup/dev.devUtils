@@ -4,6 +4,7 @@ import cn.changeforyou.base.exception.ExceptionFactory;
 import cn.changeforyou.web.cloud.devUtilApi.exception.DevApiExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -61,6 +62,7 @@ public class JdbcJavaTypeConvertor {
         jdbc2JavaMap.put("timestamp", LocalDateTime.class);
         jdbc2JavaMap.put("datetime",LocalDateTime.class);
         jdbc2JavaMap.put("date", LocalDate.class);
+        jdbc2JavaMap.put("decimal", BigDecimal.class);
 
 
         simpleName2FullNameMap.put("Integer", "java.lang.Integer");
