@@ -15,6 +15,8 @@ public class JavaEntityField {
     private String name;
     private String javaType;
     private Class javaClass;
+    private String jdbcType;
+    private String dataType;
     private String comment;
     private JavaFieldDbInfo javaFieldDbInfo;
 

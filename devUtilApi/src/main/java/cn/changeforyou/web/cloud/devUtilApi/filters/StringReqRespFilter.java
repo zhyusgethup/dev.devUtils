@@ -2,11 +2,11 @@ package cn.changeforyou.web.cloud.devUtilApi.filters;
 
 import cn.changeforyou.utils.string.StringUtils;
 import cn.changeforyou.web.cloud.devUtilApi.common.model.ResultWithEncoded;
-import cn.changeforyou.web.cloud.devUtilApi.common.model.StringReqModel;
 import cn.changeforyou.web.cloud.devUtilApi.http.ParameterRequestWrapper;
 import cn.changeforyou.web.utils.http.ServletUtils;
 import cn.changeforyou.web.utils.http.warpper.BufferedHttpResponseWrapper;
 import cn.hutool.core.codec.Base64;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -38,13 +38,13 @@ public class StringReqRespFilter implements Filter {
         } else if (contentType.startsWith(APPLICATION_JSON_VALUE)) {
             StringBuilder sb = new StringBuilder();
             req = ServletUtils.getRequestBody(req, sb);
-            StringReqModel reqModel = JSONUtil.toBean(sb.toString(), StringReqModel.class);
-            if (ResultWithEncoded.DEFAULT_ENCODED.equals(reqModel.getArithmetic())) {
-                String value = reqModel.getValue();
+            JSONObject reqModel = new JSONObject(sb.toString());
+            if (ResultWithEncoded.DEFAULT_ENCODED.equals(reqModel.getStr("arithmetic"))) {
+                String value = reqModel.getStr("value");
                 byte[] decode = Base64.decode(value);
                 String newValue = new String(decode, StandardCharsets.UTF_8);
-                reqModel.setValue(newValue);
-                req = ServletUtils.wrapperHttpServletRequest(req, JSONUtil.toJsonStr(reqModel));
+                reqModel.putOpt("value", newValue);
+                req = ServletUtils.wrapperHttpServletRequest(req, reqModel.toString());
                 modify = true;
             } else {
                 req = ServletUtils.wrapperHttpServletRequest(req, sb.toString());

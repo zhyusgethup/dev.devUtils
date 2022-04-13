@@ -1,14 +1,12 @@
 package cn.changeforyou.web.cloud.devUtilApi.modules.sql.impl;
 
 import cn.changeforyou.utils.string.StringUtils;
-import cn.changeforyou.web.cloud.devUtilApi.db.sql.JdbcJavaTypeConvertor;
 import cn.changeforyou.web.cloud.devUtilApi.parser.java.JavaEntity;
 import cn.changeforyou.web.cloud.devUtilApi.parser.java.JavaEntityDbInfo;
 import cn.changeforyou.web.cloud.devUtilApi.parser.java.JavaEntityField;
 import cn.changeforyou.web.utils.NameUtils;
 import com.jn.sqlhelper.jsqlparser.sqlparser.JSqlParser;
 import com.jn.sqlhelper.jsqlparser.sqlparser.JSqlParserStatementWrapper;
-import net.sf.jsqlparser.parser.ParseException;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.StatementVisitorAdapter;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
@@ -104,11 +102,9 @@ public class JSqlParserUtil {
                 for (ColumnDefinition columnDefinition : createTable.getColumnDefinitions()) {
                     JavaEntityField entityField = new JavaEntityField();
                     entityFields.add(entityField);
-                    entityField.setName(filterQuotation(columnDefinition.getColumnName()));
+                    entityField.setName(NameUtils.getCamelName(filterQuotation(columnDefinition.getColumnName())));
                     entityField.setComment(filterQuotation(JSqlParserUtil.getComment(columnDefinition)));
-                    String dataType = columnDefinition.getColDataType().getDataType();
-                    Class javaClass = JdbcJavaTypeConvertor.jdbcType2JavaType(dataType);
-                    entityField.setJavaClass(javaClass);
+                    entityField.setDataType(columnDefinition.getColDataType().getDataType());
                 }
             }
         };

@@ -6,9 +6,12 @@ import { request } from '../../commonApi/request';
 import ClipboardJS from 'clipboard';
 import SimpleUtilPage from './SimpleUtilPage';
 
-
+const struct ={
+  url : '/json/format',
+  demoValue: '{"data":1}'
+}
 function JsonFormat(){
-  return <SimpleUtilPage demoValue={'{"data":1}'} url={'/json/format'}/>
+  return <SimpleUtilPage struct={struct}/>
 }
 
 export default JsonFormat;

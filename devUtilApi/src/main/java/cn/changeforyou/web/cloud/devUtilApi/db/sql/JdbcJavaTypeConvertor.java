@@ -1,13 +1,16 @@
 package cn.changeforyou.web.cloud.devUtilApi.db.sql;
 
 import cn.changeforyou.base.exception.ExceptionFactory;
+import cn.changeforyou.utils.string.StringUtils;
 import cn.changeforyou.web.cloud.devUtilApi.exception.DevApiExceptionEnum;
+import cn.changeforyou.web.cloud.devUtilApi.modules.sql.impl.WriteJavaEntityContext;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,6 +84,22 @@ public class JdbcJavaTypeConvertor {
             log.error("javaType: {}", javaType);
             throw ExceptionFactory.jsonException(DevApiExceptionEnum.DESIGN_NOT_ENOUGH);
         }
+    }
+
+    public static Class getJavaTypeByDataTypeAndWriteEntityContext(String dataType, WriteJavaEntityContext context) {
+        if (StringUtils.in(dataType, "time", "timestamp", "datetime", "date")) {
+            switch (context.getTimeType()) {
+                case Date:
+                    return Date.class;
+                case Long:
+                    return Long.class;
+                case String:
+                    return String.class;
+                case java8TimeApi:
+                    return jdbcType2JavaType(dataType);
+            }
+        }
+        return jdbcType2JavaType(dataType);
     }
 
     public static Class jdbcType2JavaType(String jdbcType) {
