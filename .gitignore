@@ -18,9 +18,7 @@ coverage
 # OSX
 .DS_Store
 
-./devUtils/release/app/dist
-./devUtils/release/build
-./devUtils/.erb/dll
+**/dist
 **/build
 **/target
 */.idea

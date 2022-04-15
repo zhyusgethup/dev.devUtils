@@ -32,7 +32,7 @@
   },
   "build": {
     "productName": "开发工具",
-    "appId": "org.erb.electronReact",
+    "appId": "cn.changeforyou.web.dev.devUtils",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [
