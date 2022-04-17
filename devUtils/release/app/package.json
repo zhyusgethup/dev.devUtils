@@ -1,6 +1,6 @@
 {
   "name": "devUtils",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "开发小工具",
   "main": "./dist/main/main.js",
   "author": {
