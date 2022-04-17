@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "axios": "^0.26.1",
-    "base64-js": "^1.5.1",
-    "clipboard": "^2.0.10",
-    "js-base64": "^3.7.2"
-  }
-}
