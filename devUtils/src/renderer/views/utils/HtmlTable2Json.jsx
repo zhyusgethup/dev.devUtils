@@ -3,7 +3,8 @@ import { InboxOutlined } from '@ant-design/icons';
 import { Button, Form, Upload, Input, message, Divider, Table } from 'antd';
 import Dragger from 'antd/es/upload/Dragger';
 import { BASE_URL } from '../../config/RequestConstant';
-import TableUtil from '../../utils/TableUtil';
+import TextArea from 'antd/es/input/TextArea';
+import { Base64 } from 'js-base64';
 
 
 function HtmlTable2Json() {
@@ -11,7 +12,7 @@ function HtmlTable2Json() {
   const [fileList, setFileList] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [uploadVisual, setUploadVisual] = useState(true);
-  const [tables, setTables] = useState([]);
+  const [text, setText] = useState('');
 
   function handleUpload() {
     const formData = new FormData();
@@ -20,7 +21,7 @@ function HtmlTable2Json() {
     });
     setUploading(true);
     // You can use any AJAX library you like
-    fetch(BASE_URL + '/html/uploadHtml', {
+    fetch(BASE_URL + '/html/html2Json', {
       method: 'POST',
       body: formData
     }).then(res => res.json())
@@ -28,7 +29,7 @@ function HtmlTable2Json() {
         message.success('upload successfully.');
         console.log(json);
         setUploadVisual(false);
-        setTables(json.data);
+        setText(Base64.decode(json.data));
       })
       .catch(() => {
         message.error('upload failed.');
@@ -38,18 +39,13 @@ function HtmlTable2Json() {
         setUploading(false);
       });
   }
-  function renderTable(table, key) {
-    return (<div key={key}><Divider>{table.tableTitle}</Divider><Table dataSource={TableUtil.wrapData(table.data)} columns={table.tableColumns} pagination={false} /></div>)
-  }
 
-  function renderTables(){
-    let tableUIs = [];
-    if(tables.length != 0){
-      for (let i = 0; i < tables.length; i++) {
-        tableUIs.push(renderTable(tables[i], i));
-      }
-    }
-    return tableUIs;
+  function renderTextArea(){
+    return (<TextArea
+      value={text}
+      placeholder="Controlled autosize"
+      autoSize={{ minRows: 3, maxRows: 20 }}
+    />);
   }
 
   const { Dragger } = Upload;
@@ -71,7 +67,9 @@ function HtmlTable2Json() {
   };
   return (
     <>
-      <div className={uploadVisual ? 'visible' : 'hidden'}>
+      <div
+        className={uploadVisual ? 'visible' : 'hidden'}
+      >
         <Dragger {...props}>
           <p className='ant-upload-drag-icon'>
             <InboxOutlined />
@@ -91,7 +89,10 @@ function HtmlTable2Json() {
         </div>
       </div>
       <div className={uploadVisual ? 'hidden' : 'visible'}>
-        {renderTables()}
+        {renderTextArea()}
+      </div>
+      <div>
+        <Button onClick={() => location.reload()}>重置</Button>
       </div>
     </>
   );
