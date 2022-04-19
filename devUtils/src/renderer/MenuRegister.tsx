@@ -63,30 +63,33 @@ function MenuRegister() {
         menusData: [
           {
             text: 'java实体解析为ddl解析',
-            url: '/javaParse',
+            url: '/javaParse'
           }, {
             text: 'JSON格式化',
-            url: '/jsonFormat',
+            url: '/jsonFormat'
           }, {
             text: 'DDL转java实体',
-            url: '/ddl2Entity',
-          },
-        ],
+            url: '/ddl2Entity'
+          }, {
+            text: 'html来的table转json数据',
+            url: '/htmlTable2Json'
+          }
+        ]
       })
     );
     return menus;
   }
 
   return (
-    <Layout className="layout">
+    <Layout className='layout'>
       <Header>
-        <div className="logo" />
-        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>
+        <div className='logo' />
+        <Menu theme='dark' mode='horizontal' defaultSelectedKeys={['1']}>
           {renderMenus()}
         </Menu>
       </Header>
       <Content style={{ padding: '0 50px' }}>
-        <div className="site-layout-content" id="content">
+        <div className='site-layout-content' id='content'>
           <Outlet />
         </div>
       </Content>

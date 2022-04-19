@@ -10,17 +10,12 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -49,7 +44,6 @@ public class StringReqRespFilter implements Filter {
             } else {
                 req = ServletUtils.wrapperHttpServletRequest(req, sb.toString());
             }
-
         } else {
             Map<String, String[]> parameterMap = req.getParameterMap();
             String[] encodes = parameterMap.get("encode");
@@ -101,25 +95,6 @@ public class StringReqRespFilter implements Filter {
     @Override
     public void destroy() {
         Filter.super.destroy();
-    }
-
-    private String getFormParam(HttpServletRequest request) {
-        MultipartResolver resolver = new StandardServletMultipartResolver();
-        MultipartHttpServletRequest mRequest = resolver.resolveMultipart(request);
-
-        Map<String, Object> param = new HashMap<>();
-        Map<String, String[]> parameterMap = mRequest.getParameterMap();
-        if (!parameterMap.isEmpty()) {
-            param.putAll(parameterMap);
-        }
-        Map<String, MultipartFile> fileMap = mRequest.getFileMap();
-        if (!fileMap.isEmpty()) {
-            for (Map.Entry<String, MultipartFile> fileEntry : fileMap.entrySet()) {
-                MultipartFile file = fileEntry.getValue();
-                param.put(fileEntry.getKey(), file.getOriginalFilename() + "(" + file.getSize() + " byte)");
-            }
-        }
-        return toJson(param);
     }
 
     private static String toJson(Object object) {

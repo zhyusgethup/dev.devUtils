@@ -6,6 +6,7 @@ import JavaParse from '../utils/JavaParse';
 import Hello from '../Hello';
 import JsonFormat from '../utils/JsonFormat';
 import Ddl2Entity from '../utils/Ddl2Entity';
+import HtmlTable2Json from '../utils/HtmlTable2Json';
 
 /**
  * 在这里注册路由
@@ -25,6 +26,7 @@ class MyRouter extends Component {
             <Route path="hello" element={<Hello />} />
             <Route path="jsonFormat" element={<JsonFormat/>} />
             <Route path="ddl2Entity" element={<Ddl2Entity/>} />
+            <Route path="htmlTable2Json" element={<HtmlTable2Json/>} />
           </Route>
         </Routes>
       </HashRouter>

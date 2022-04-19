@@ -1,32 +1,28 @@
 package cn.changeforyou.web.cloud.devUtilApi.controller;
 
-import cn.changeforyou.web.cloud.devUtilApi.common.model.ResultWithEncoded;
-import cn.changeforyou.web.cloud.devUtilApi.common.model.StringReqModel;
-import cn.changeforyou.web.cloud.webBase.platform.PlatformEnum;
-import cn.changeforyou.web.cloud.webBase.platform.PlatformStringUtils;
-import cn.changeforyou.web.cloud.webBase.platform.PlatformUtils;
 import cn.changeforyou.web.cloud.devUtilApi.db.sql.DDLBuilder;
 import cn.changeforyou.web.cloud.devUtilApi.db.sql.SqlFormatUtil;
 import cn.changeforyou.web.cloud.devUtilApi.modules.common.EasyProgressResult;
 import cn.changeforyou.web.cloud.devUtilApi.modules.common.ProgressContext;
 import cn.changeforyou.web.cloud.devUtilApi.modules.common.ProgressContextHolder;
 import cn.changeforyou.web.cloud.devUtilApi.parser.java.JavaEntityParser;
+import cn.changeforyou.web.cloud.webBase.platform.PlatformEnum;
+import cn.changeforyou.web.cloud.webBase.platform.PlatformStringUtils;
+import cn.changeforyou.web.cloud.webBase.platform.PlatformUtils;
 import cn.hutool.core.codec.Base64;
-import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.io.IOException;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 @RestController
 @RequestMapping("java")
