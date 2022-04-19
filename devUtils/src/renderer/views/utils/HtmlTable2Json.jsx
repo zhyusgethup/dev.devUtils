@@ -1,112 +1,100 @@
 import React, { Component, useState } from 'react';
 import { InboxOutlined } from '@ant-design/icons';
-import { Button, Form, Upload, Input, message } from 'antd';
+import { Button, Form, Upload, Input, message, Divider, Table } from 'antd';
 import Dragger from 'antd/es/upload/Dragger';
+import { BASE_URL } from '../../config/RequestConstant';
+import TableUtil from '../../utils/TableUtil';
 
 
-class HtmlTable2Json extends Component {
+function HtmlTable2Json() {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      fileList: [],
-      uploading: false
-    };
-  }
+  const [fileList, setFileList] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [uploadVisual, setUploadVisual] = useState(true);
+  const [tables, setTables] = useState([]);
 
-
-  handleUpload() {
+  function handleUpload() {
     const formData = new FormData();
-    this.state.fileList.forEach(file => {
-      formData.append('files[]', file);
+    fileList.forEach(file => {
+      formData.append('files', file);
     });
-    this.setState({ uploading: true });
+    setUploading(true);
     // You can use any AJAX library you like
-    fetch('https://www.mocky.io/v2/5cc8019d300000980a055e76', {
+    fetch(BASE_URL + '/html/uploadHtml', {
       method: 'POST',
       body: formData
-    })
-      .then(res => res.json())
-      .then(() => {
+    }).then(res => res.json())
+      .then((json) => {
         message.success('upload successfully.');
+        console.log(json);
+        setUploadVisual(false);
+        setTables(json.data);
       })
       .catch(() => {
         message.error('upload failed.');
       })
       .finally(() => {
-        this.setState({ fileList: [] });
+        // setFileList([]);
+        setUploading(false);
       });
   }
+  function renderTable(table, key) {
+    return (<div key={key}><Divider>{table.tableTitle}</Divider><Table dataSource={TableUtil.wrapData(table.data)} columns={table.tableColumns} pagination={false} /></div>)
+  }
 
-  // const props = {
-  //   onRemove: file => {
-  //     const index = fileList.indexOf(file);
-  //     const newFileList = fileList.slice();
-  //     newFileList.splice(index, 1);
-  //     setFileList(newFileList);
-  //   },
-  //   beforeUpload: file => {
-  //     console.log(file);
-  //     if(file.name.endsWith(".html")) {
-  //       setFileList([...fileList, file]);
-  //       return false;
-  //     }
-  //     message.error('只能上传html文件');
-  //     return false;
-  //   },
-  //   fileList
-  // };
-  // const normFile = (e) => { //如果是typescript, 那么参数写成 e: any
-  //   if (Array.isArray(e)) {
-  //     return e;
-  //   }
-  //   return e && e.fileList;
-  // };
+  function renderTables(){
+    let tableUIs = [];
+    if(tables.length != 0){
+      for (let i = 0; i < tables.length; i++) {
+        tableUIs.push(renderTable(tables[i], i));
+      }
+    }
+    return tableUIs;
+  }
 
-
-  render() {
-    const { uploading, fileList } = this.state;
-    const props = {
-      name: 'file',
-      multiple: true,
-      action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-      beforeUpload: file => {
-        console.log(file);
-        // if (file.name.endsWith('.html')) {
-          console.log('触发了 更新操作:' + this.state.fileList.length);
-          this.setState(state => ({
-            fileList: [...state.fileList, file],
-          }));
-          return false;
-        // }
-        // message.error('只能上传html文件');
-        // return false;
-      },
-      onDrop(e) {
-        console.log('Dropped files', e.dataTransfer.files);
+  const { Dragger } = Upload;
+  const props = {
+    name: 'files',
+    multiple: true,
+    beforeUpload: file => {
+      if (file.name.endsWith('.html')) {
+        setFileList(fileList => [...fileList, file]);
         return false;
-      },
-      fileList
-    };
-
-    return (
-      <>
+      }
+      message.error('只能上传html文件');
+      return false;
+    },
+    onDrop(e) {
+      return false;
+    },
+    fileList
+  };
+  return (
+    <>
+      <div className={uploadVisual ? 'visible' : 'hidden'}>
         <Dragger {...props}>
           <p className='ant-upload-drag-icon'>
             <InboxOutlined />
           </p>
         </Dragger>
-        <Button
-          type='primary'
-          onClick={this.handleUpload}
-          disabled={this.state.fileList.length === 0}
-          loading={this.state.uploading}
-          style={{ marginTop: 16 }}
-        >
-          {this.state.uploading ? 'Uploading' : 'Start Upload'}
-        </Button>
-      </>
-    );
-  }
+        <div style={{ textAlign: 'center' }}>
+          <Button
+            type='circle'
+            onClick={handleUpload}
+            size={'large'}
+            disabled={fileList.length === 0}
+            loading={uploading}
+            style={{ marginTop: 16 }}
+          >
+            {uploading ? 'Uploading' : 'Start Upload'}
+          </Button>
+        </div>
+      </div>
+      <div className={uploadVisual ? 'hidden' : 'visible'}>
+        {renderTables()}
+      </div>
+    </>
+  );
 }
+
 export default HtmlTable2Json;

@@ -1,6 +1,7 @@
 import { render } from 'react-dom';
 import MyRouter from './views/router/MyRouter';
 import 'antd/dist/antd.css';
+import './css/common.css';
 
 render(<MyRouter />, document.getElementById('root'));
 
