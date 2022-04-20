@@ -40,10 +40,10 @@ function HtmlTable2Json() {
       });
   }
 
-  function renderTextArea(){
+  function renderTextArea() {
     return (<TextArea
       value={text}
-      placeholder="Controlled autosize"
+      placeholder='Controlled autosize'
       autoSize={{ minRows: 3, maxRows: 20 }}
     />);
   }
@@ -53,6 +53,10 @@ function HtmlTable2Json() {
     name: 'files',
     multiple: true,
     beforeUpload: file => {
+      if(file.size > 1024 * 1024) {
+        message.error("文件大小不能超过1M");
+        return false;
+      }
       if (file.name.endsWith('.html')) {
         setFileList(fileList => [...fileList, file]);
         return false;
@@ -62,6 +66,16 @@ function HtmlTable2Json() {
     },
     onDrop(e) {
       return false;
+    },
+    onRemove(file) {
+      console.log(file.uid);
+      let newList = [];
+      for (let i = 0; i < fileList.length; i++) {
+        if (file.uid != fileList[i].uid) {
+          newList.push(fileList[i]);
+        }
+      }
+      setFileList(newList);
     },
     fileList
   };
@@ -77,7 +91,6 @@ function HtmlTable2Json() {
         </Dragger>
         <div style={{ textAlign: 'center' }}>
           <Button
-            type='circle'
             onClick={handleUpload}
             size={'large'}
             disabled={fileList.length === 0}
