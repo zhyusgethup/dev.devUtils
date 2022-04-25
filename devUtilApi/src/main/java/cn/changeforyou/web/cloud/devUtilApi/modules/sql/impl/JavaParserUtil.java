@@ -72,7 +72,6 @@ public class JavaParserUtil {
                 javadocComment.setContent(entityComment);
                 fieldDeclaration.setJavadocComment(comment);
             }
-
         }
 
         if(!context.isLombok()) {

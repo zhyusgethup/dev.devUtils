@@ -19,4 +19,5 @@ public class HtmlTableVO {
     private List<TableColumn> tableColumns;
     private List<Map<String, String>> data;
     private String errorInfo;
+    private String comment;
 }
